@@ -2,6 +2,17 @@
 
 int g_bSdlCutsceneOnly;
 
+short SdlAllocateCutsceneViewport(struct Viewport *viewport, short colour,
+                                  short flags)
+{
+    if (viewport == &g_stCutsceneTextBackingViewport_005d2db0) {
+        /* Both rectangles have inclusive bounds. The backing starts at 0. */
+        viewport->bottom = (short)(g_stCutsceneTextViewport_005d2d90.bottom -
+                                  g_stCutsceneTextViewport_005d2d90.top);
+    }
+    return AllocateViewport(viewport, colour, flags);
+}
+
 void SdlRunSelectedCampaignCutscene(void)
 {
     short savedWingman;

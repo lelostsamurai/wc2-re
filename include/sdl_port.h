@@ -283,6 +283,8 @@ int SdlOriginalTitleMusicReady(void);
 int SdlStartOriginalTitleMusic(void);
 int SdlOriginalTitleSequenceAvailable(void);
 void SdlRunSelectedCampaignCutscene(void);
+short SdlAllocateCutsceneViewport(struct Viewport *viewport, short colour,
+                                  short flags);
 void SdlFinishCutsceneOnly(void);
 int SdlPlayGameSoundEffect(int soundNumber, int sourceObject,
                               int looping);

@@ -430,6 +430,7 @@ MODERN_GAME_HOST_SRCS = \
 	src/sdl/gl_renderer.c \
 	src/sdl/joystick.c \
 	src/sdl/music.c \
+	src/sdl/text.c \
 	src/sdl/video.c
 MODERN_GAME_HOST_CXX_SRCS = \
 	src/sdl/originfx.cpp \
@@ -489,6 +490,7 @@ MODERN_INPUT_CORE_OBJS = \
 	$(MODERN_OUT_DIR)/obj/globals.o \
 	$(MODERN_OUT_DIR)/obj/sysinput.o
 MODERN_BASE_C_TEST_NAMES = sdl_compat_smoke sdl_crt_compat sdl_text_compat \
+	sdl_font_bounds \
 	sdl_dos_resources sdl_input_compat sdl_event_compat sdl_video_compat \
 	sdl_ship_evasion sdl_adaptive_difficulty sdl_turret_guns sdl_ship_exhaust \
 	sdl_capital_weapons sdl_music_paths sdl_mission_objectives sdl_cutscene_input
@@ -623,6 +625,13 @@ $(MODERN_OUT_DIR)/obj/sound.o: MODERN_CPPFLAGS += \
 	-Dix_system_new_sound=SdlNewWaveSound
 $(MODERN_OUT_DIR)/obj/sound.o: Makefile
 
+# Select native safety fixes without editing retail-address function bodies.
+$(MODERN_OUT_DIR)/obj/gr.o: MODERN_CPPFLAGS += \
+	-DDrawFontGlyph=SdlRetailDrawFontGlyph
+$(MODERN_OUT_DIR)/obj/screens.o: MODERN_CPPFLAGS += \
+	-DAllocateViewport=SdlAllocateCutsceneViewport
+$(MODERN_OUT_DIR)/obj/gr.o $(MODERN_OUT_DIR)/obj/screens.o: Makefile
+
 $(MODERN_OUT_DIR)/tests/%.o: tests/%.c | modern-check-deps
 	@mkdir -p $(dir $@)
 	$(MODERN_CC) $(MODERN_CPPFLAGS) $(MODERN_TEST_CPPFLAGS) $(MODERN_CFLAGS) \
@@ -654,6 +663,7 @@ $(MODERN_TARGET): \
 # These checks supply their own main, but also reach the launcher's cutscene-
 # exit callback through the resource objects.
 $(MODERN_OUT_DIR)/tests/sdl_crt_compat$(MODERN_EXE_SUFFIX) \
+$(MODERN_OUT_DIR)/tests/sdl_font_bounds$(MODERN_EXE_SUFFIX) \
 $(MODERN_OUT_DIR)/tests/sdl_cutscene_input$(MODERN_EXE_SUFFIX): $(MODERN_TEST_LAUNCHER_OBJ)
 
 # The host compatibility layer reaches into the game core for packet loads and
